@@ -56,7 +56,7 @@ public class MainActivity extends BaseActivity<LoginPresenterImp,LoginView> impl
         this.loginBtn = (Button)findViewById(R.id.loginBtn);
         this.usernameEdit = (EditText)findViewById(R.id.getusernameEdit);
         this.passwordEdit = (EditText)findViewById(R.id.getpasswordEdit);
-        this.toChatActivity = new Intent(this,ChatActivity.class);
+        this.toChatActivity = new Intent(this,MainFaceActivity.class);
         this.cUser = cUserObj.getInstance();
     }
 

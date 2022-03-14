@@ -32,7 +32,7 @@ public class ChatPresenterImp extends BasePresenter<ChatView, userMsgObj> implem
 
     @Override
     public void sendMsg(userObj cUser, String Msg) {
-        if(cUser!=null && !Msg.equals(null)){
+        if(cUser!=null && !Msg.equals(null) && getmView()!=null){
                 chatModelImp.sendMsg(cUser,Msg);
         }
     }

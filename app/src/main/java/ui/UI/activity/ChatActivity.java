@@ -94,6 +94,12 @@ public class ChatActivity extends BaseActivity<ChatPresenterImp, ChatView> imple
         return this;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        chatPresenterImp.unSubscribe();//activity注销时释放监听
+    }
+
     /*
     * 请求成功的回调
     * q*/

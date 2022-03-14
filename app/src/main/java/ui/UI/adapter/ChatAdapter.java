@@ -12,15 +12,12 @@ import entity.userMsgObj;
 import service.Loader.userLoader;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import entity.userMsgObj;
-import entity.userObj;
 import zhh.mvpchatroom.R;
 import entity.cUserObj;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     ArrayList<userMsgObj> chatModelList;
-    userLoader mUserLoader;
     private cUserObj cUser;
 
     public ChatAdapter(ArrayList<userMsgObj> dataList){
