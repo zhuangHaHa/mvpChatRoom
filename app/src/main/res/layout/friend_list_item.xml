@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/friendListItemLayout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
     <RelativeLayout
@@ -36,6 +37,7 @@
                 android:text="用户名"
                 android:id="@+id/friendList_friendNickName"
                 android:textSize="20dp"></TextView>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -52,9 +54,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:text="20:30"
+            android:text="离线"
+            android:id="@+id/friendList_friendStatus"
             android:textSize="20dp"></TextView>
 
     </RelativeLayout>
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="10dp"></LinearLayout>
 </LinearLayout>

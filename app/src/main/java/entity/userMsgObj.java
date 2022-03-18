@@ -1,5 +1,7 @@
 package entity;
 
+import java.util.ArrayList;
+
 public class userMsgObj extends userObj{
    public userMsgObj(){}
 
@@ -11,4 +13,14 @@ public class userMsgObj extends userObj{
    }
 
    private String msg;
+
+   public ArrayList<Integer> getUserList() {
+      return userList;
+   }
+
+   public void setUserList(ArrayList<Integer> userList) {
+      this.userList = userList;
+   }
+
+   private ArrayList<Integer> userList;
 }

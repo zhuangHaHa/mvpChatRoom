@@ -73,6 +73,15 @@ public class userObj {
         this.code = code;
     }
 
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public String nickname;
     public Integer id;
     public String username;
@@ -81,5 +90,6 @@ public class userObj {
     public String email;
     public String token;
     public Integer code;
+    public Integer status; //玩家是否在线 0表示离线，1表示在线
 
 }

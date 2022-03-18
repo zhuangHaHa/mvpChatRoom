@@ -1,7 +1,9 @@
 package ui.UI.adapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import entity.userObj;
 import zhh.mvpchatroom.R;
 
 
-public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.ViewHolder> {
+public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.ViewHolder>  {
 
    ArrayList<userObj> friendUserList;
 
@@ -30,8 +32,14 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
    @Override
    public void onBindViewHolder(@NonNull FriendListAdapter.ViewHolder holder, int position) {
-      userObj friendUser = friendUserList.get(position);
+      final userObj friendUser = friendUserList.get(position);
       holder.friendNickName.setText(friendUser.getNickname());
+      holder.friendListItemLayout.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View view) {
+            Log.i("您点击的是用户",friendUser.getNickname());
+         }
+      });
    }
 
    @Override
@@ -39,12 +47,17 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
       return friendUserList.size();
    }
 
+
    static class ViewHolder extends RecyclerView.ViewHolder {
       TextView friendNickName;
+      LinearLayout friendListItemLayout;
+      TextView friendStatus;
 
       public ViewHolder(@NonNull View itemView) {
          super(itemView);
          friendNickName = (TextView) itemView.findViewById(R.id.friendList_friendNickName);
+         friendListItemLayout = (LinearLayout) itemView.findViewById(R.id.friendListItemLayout);
+         friendStatus = (TextView) itemView.findViewById(R.id.friendList_friendStatus);
       }
    }
 }

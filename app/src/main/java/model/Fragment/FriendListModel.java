@@ -9,5 +9,8 @@ public interface FriendListModel<T> {
     * */
    void getFriendList(userObj cUser, IBaseRequestCallBack iBaseRequestCallBack);
 
-
+   /*
+    * 注销subscribe
+    * */
+   void onUnsubscribe();
 }

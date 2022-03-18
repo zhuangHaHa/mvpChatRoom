@@ -67,6 +67,9 @@ public class ChatModelImp implements ChatModel<userMsgObj> {
                         if(revUserMsgObj.getCode() == chatAboutConstants.chatMsgObj.CHATMSG_RECEIVE_SUCCESS){
                             iBaseRequestCallBack.requestSuccess(revUserMsgObj);
                         }
+                        if(revUserMsgObj.getCode() == chatAboutConstants.chatMsgObj.ENTERROOM_SUCCESS){
+                            iBaseRequestCallBack.requestSuccess(revUserMsgObj);
+                        }
                     }
 
                     @Override
@@ -88,7 +91,7 @@ public class ChatModelImp implements ChatModel<userMsgObj> {
     }
 
     /*
-    * 处理接收消息类
+    * 发送消息类
     * */
     private String sendMsgDealer(userObj tUser,userMsgObj tMsg,Integer code){
         if(code == chatAboutConstants.chatMsgObj.ENTERROOM_SUCCESS){
