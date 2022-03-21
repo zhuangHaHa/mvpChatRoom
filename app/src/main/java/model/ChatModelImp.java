@@ -11,8 +11,8 @@ import config.ApiConfig;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Action;
 import okhttp3.WebSocket;
+import service.Config;
 import service.RxWebSocket;
-import service.WebSocketInfo;
 import service.WebSocketSubscriber;
 import entity.userObj;
 import entity.userMsgObj;
@@ -32,14 +32,28 @@ public class ChatModelImp implements ChatModel<userMsgObj> {
     }
 
     @Override
-    public void sendMsg(userObj cUser, String msg) {
+    public void sendMsg(userObj cUser, String msg,Integer friendId,String groupName) {
         userMsg.setCode(chatAboutConstants.chatMsgObj.CHATMSG_SEND_SUCCESS);
         userMsg.setId(cUser.getId());
         userMsg.setMsg(msg);
+        userMsg.setFriendId(friendId);
+        userMsg.setGroupName(groupName);
         String msgJson = gson.toJson(userMsg);
         Log.i("msgJson:",msgJson);
         if(userMsg!=null){
             RxWebSocket.send(ApiConfig.channelURL,msgJson);
+        }
+    }
+
+    //玩家Activity销毁，通知服务器下线
+    @Override
+    public void destoryDisconnect(userObj cUser) {
+        cUser.setCode(chatAboutConstants.chatMsgObj.LEAVEROOM_SUCCESS);
+        String disConnectJson = sendMsgDealer(cUser,null,chatAboutConstants.chatMsgObj.LEAVEROOM_SUCCESS);
+        if (disConnectJson != null) {
+            RxWebSocket.send(ApiConfig.channelURL,disConnectJson);
+        }else{
+            Log.e("ChatModelImp","断开cs请求发送失败，检查发送协议");
         }
     }
 
@@ -48,7 +62,7 @@ public class ChatModelImp implements ChatModel<userMsgObj> {
     建立连接，发送通信成功消息
     * */
     @Override
-    public void receiveMsg(final userObj cUser, final IBaseRequestCallBack iBaseRequestCallBack) {
+    public void  receiveMsg(final userObj cUser, final IBaseRequestCallBack iBaseRequestCallBack) {
         RxWebSocket.get(ApiConfig.channelURL)
                 .subscribe(new WebSocketSubscriber() {
                     @Override
@@ -57,8 +71,9 @@ public class ChatModelImp implements ChatModel<userMsgObj> {
                         String setConnectJson = sendMsgDealer(cUser,null,chatAboutConstants.chatMsgObj.ENTERROOM_SUCCESS);
                         if(setConnectJson!=null){
                             RxWebSocket.send(ApiConfig.channelURL,setConnectJson);
+                        }else{
+                            Log.e("ChatModelImp","连接cs请求发送失败，检查发送协议");
                         }
-                        Log.i("建立连接的User",cUser.getUsername());
                     }
 
                     @Override
@@ -70,10 +85,15 @@ public class ChatModelImp implements ChatModel<userMsgObj> {
                         if(revUserMsgObj.getCode() == chatAboutConstants.chatMsgObj.ENTERROOM_SUCCESS){
                             iBaseRequestCallBack.requestSuccess(revUserMsgObj);
                         }
+                        if(revUserMsgObj.getCode() == chatAboutConstants.chatMsgObj.LEAVEROOM_SUCCESS){
+                            iBaseRequestCallBack.requestSuccess(revUserMsgObj); //玩家好友下线通知
+                        }
                     }
 
+                    //服务器挂掉回调
                     @Override
                     protected void onClose() {
+
                         super.onClose();
                     }
                 });
@@ -101,6 +121,10 @@ public class ChatModelImp implements ChatModel<userMsgObj> {
         if(code == chatAboutConstants.chatMsgObj.CHATMSG_RECEIVE_SUCCESS){
             String msgJson = gson.toJson(tMsg,userMsgObj.class);
             return msgJson;
+        }
+        if(code == chatAboutConstants.chatMsgObj.LEAVEROOM_SUCCESS){
+            String userJson = gson.toJson(tUser,userObj.class);
+            return userJson;
         }
         return null;
     }

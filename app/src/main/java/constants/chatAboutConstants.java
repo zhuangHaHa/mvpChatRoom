@@ -18,5 +18,6 @@ public interface chatAboutConstants {
         public static final int CHATMSG_SEND_SUCCESS =2003;
         public static final int CHATMSG_SEND_FAILED = 2004;
         public static final int CHATMSG_RECEIVE_SUCCESS = 2005;
+        public static final int LEAVEROOM_SUCCESS = 2006;
     }
 }

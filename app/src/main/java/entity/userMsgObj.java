@@ -23,4 +23,24 @@ public class userMsgObj extends userObj{
    }
 
    private ArrayList<Integer> userList;
+
+   public String getGroupName() {
+      return groupName;
+   }
+
+   public void setGroupName(String groupName) {
+      this.groupName = groupName;
+   }
+
+   private String groupName;
+
+   public Integer getFriendId() {
+      return friendId;
+   }
+
+   public void setFriendId(Integer friendId) {
+      this.friendId = friendId;
+   }
+
+   private Integer friendId;
 }

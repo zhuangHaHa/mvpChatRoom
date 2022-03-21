@@ -1,4 +1,6 @@
 package ui.UI.adapter;
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +14,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import entity.userMsgObj;
 import entity.userObj;
+import ui.UI.activity.ChatActivity;
+import ui.UI.activity.MainFaceActivity;
+import ui.UI.fragment.FriendListFragment;
 import zhh.mvpchatroom.R;
 
 
 public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.ViewHolder>  {
 
    ArrayList<userObj> friendUserList;
+   Context mContext;
+   Intent startChatActivity;
+
 
    public FriendListAdapter(ArrayList<userObj> dataList){
       this.friendUserList = dataList;
@@ -40,6 +48,12 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
             Log.i("您点击的是用户",friendUser.getNickname());
          }
       });
+      if(friendUser.getStatus() == 0){
+         holder.friendStatus.setText("离线");
+      }
+      if(friendUser.getStatus() == 1){
+         holder.friendStatus.setText("在线");
+      }
    }
 
    @Override

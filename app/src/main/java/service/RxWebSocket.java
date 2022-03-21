@@ -48,6 +48,7 @@ public class RxWebSocket {
         RxWebSocketUtil.getInstance().send(url, msg);
     }
 
+
     /**
      * 如果url的WebSocket已经打开,可以直接调用这个发送消息.
      *

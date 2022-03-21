@@ -1,5 +1,6 @@
 package ui.UI.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -32,6 +33,9 @@ public class FriendListFragment extends BaseFragment<FriendListPresenterImp, Fri
     private RecyclerView friendListRecyclerView;
     private FriendListAdapter friendListAdapter;
     private FriendListPresenterImp friendListPresenterImp;
+    private ArrayList<Integer> userFriendsStatus  = new ArrayList<>();
+    private Context fragmentContext;
+
 
     public FriendListFragment() {
         // Required empty public constructor
@@ -106,11 +110,23 @@ public class FriendListFragment extends BaseFragment<FriendListPresenterImp, Fri
 
 
     public void ChangeFriendStatus(ArrayList<Integer> friendStatus) {
-        for(int i=0;i<friendStatus.size();i++){
-            for(int j=0;j<myFriendUserList.size();j++){
-                if(myFriendUserList.get(j).getId() == friendStatus.get(i)){
+        this.userFriendsStatus = friendStatus;
+        updateFriendStatus(userFriendsStatus);
+    }
+    //先将玩家数据保存在内存，fragment实例化后再更新状态
+    //friendStatus 在线的好友列表
+    //myFriendUserList 所有的好友列表
+    private void updateFriendStatus(ArrayList<Integer> onLineUsers){
+        Log.i("当前在线的玩家用户",onLineUsers.toString());
+        Log.i("用户好友列表",myFriendUserList.toString());
+        for(int i=0;i<myFriendUserList.size();i++){
+            for(int j=0;j<onLineUsers.size();j++){
+                if(onLineUsers.get(j) == myFriendUserList.get(i).getId()){
                     myFriendUserList.get(i).setStatus(1);
-                    Log.i("FriendListFragment",Integer.toString(myFriendUserList.get(i).getStatus()));
+                    break;
+                }
+                if(onLineUsers.get(j) != myFriendUserList.get(i).getId()){
+                    myFriendUserList.get(i).setStatus(0);
                 }
             }
         }

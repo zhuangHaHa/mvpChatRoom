@@ -18,6 +18,8 @@ import zhh.mvpchatroom.R;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,16 +36,15 @@ public class MainFaceActivity extends BaseActivity<ChatPresenterImp, ChatView> i
     private cUserObj cUser;
     private ArrayList<Integer> onlineFriends;
     private FriendListAdapter friendListAdapter;
-    private int firstCreate; //表示是否初次进入该界面
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_face);
         initView();
-        receiveConnect();
         initPager();
+        receiveConnect();
+
     }
 
     private void receiveConnect(){
@@ -57,7 +58,7 @@ public class MainFaceActivity extends BaseActivity<ChatPresenterImp, ChatView> i
         this.onlineFriends = new ArrayList<>();
         this.chatPresenterImp.attachView(this);
         this.friendListFragment = FriendListFragment.newInstance();
-        this.firstCreate = 0;
+
     }
 
     @Override
@@ -84,20 +85,19 @@ public class MainFaceActivity extends BaseActivity<ChatPresenterImp, ChatView> i
     public void loadDataSuccess(userMsgObj tData) {
         if(tData.getCode() == chatAboutConstants.chatMsgObj.ENTERROOM_SUCCESS){
             this.onlineFriends = tData.getUserList();
-            if(firstCreate == 0){
-                firstCreate = 1;//初次进入就不进行更新用户状态
-            }
-            else if(firstCreate == 1){
-                friendListFragment.ChangeFriendStatus(onlineFriends);//Adapter已经渲染完成
-            }
-            Log.i("当前系统在线人数:",tData.getUserList().toString());
+            ChangeFriendStatus(onlineFriends);
+        }
+        if(tData.getCode() == chatAboutConstants.chatMsgObj.LEAVEROOM_SUCCESS){
+            this.onlineFriends = tData.getUserList();
+            ChangeFriendStatus(onlineFriends);
         }
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        chatPresenterImp.destoryDisconnect(cUserObj.getInstance());
         chatPresenterImp.unSubscribe();//activity注销时释放监听
+        super.onDestroy();
     }
 
     //调用更新Fragment内的用户状态，避免在渲染完成前进行传参

@@ -42,6 +42,9 @@ public class ChatActivity extends BaseActivity<ChatPresenterImp, ChatView> imple
 
     private String chatMsg;
 
+    private Integer friendId;
+    private String groupName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +66,7 @@ public class ChatActivity extends BaseActivity<ChatPresenterImp, ChatView> imple
 
     private void sendMsg(){
         chatMsg = msgTextEt.getText().toString();
-        chatPresenterImp.sendMsg(cUser,chatMsg);
+        chatPresenterImp.sendMsg(cUser,chatMsg,friendId,groupName);
     }
 
     @Override
@@ -82,6 +85,7 @@ public class ChatActivity extends BaseActivity<ChatPresenterImp, ChatView> imple
 
         chatPresenterImp = new ChatPresenterImp();
         this.chatPresenterImp.attachView(this);
+
     }
 
     @Override

@@ -29,9 +29,9 @@ public class MainActivity extends BaseActivity<LoginPresenterImp,LoginView> impl
     private Intent toChatActivity;
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         //Activity销毁后记得解绑
         mloginPresenterImp.unSubscribe();
+        super.onDestroy();
     }
 
     @Override

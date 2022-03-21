@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import base.BasePresenter;
 import base.IBaseRequestCallBack;
 import config.ApiConfig;
+import entity.cUserObj;
 import entity.userMsgObj;
 import entity.userObj;
 import model.ChatModelImp;
@@ -31,9 +32,9 @@ public class ChatPresenterImp extends BasePresenter<ChatView, userMsgObj> implem
 
 
     @Override
-    public void sendMsg(userObj cUser, String Msg) {
+    public void sendMsg(userObj cUser, String Msg,Integer friendId,String groupName) {
         if(cUser!=null && !Msg.equals(null) && getmView()!=null){
-                chatModelImp.sendMsg(cUser,Msg);
+                chatModelImp.sendMsg(cUser,Msg,friendId,groupName);
         }
     }
 
@@ -43,6 +44,14 @@ public class ChatPresenterImp extends BasePresenter<ChatView, userMsgObj> implem
             chatModelImp.receiveMsg(cUser,this);
         }
     }
+
+    @Override
+    public void destoryDisconnect(userObj cUser) {
+        if(getmView()!=null){
+            chatModelImp.destoryDisconnect(cUser);
+        }
+    }
+
 
     @Override
     public void unSubscribe() {
