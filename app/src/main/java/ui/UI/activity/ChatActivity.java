@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import base.BaseResponse;
+import entity.userFriendObj;
 import entity.userMsgObj;
 import entity.userObj;
 
@@ -28,6 +30,7 @@ import constants.chatAboutConstants;
 import entity.cUserObj;
 public class ChatActivity extends BaseActivity<ChatPresenterImp, ChatView> implements ChatView {
 
+    private Button getChatMsgInfo;
     private Button sendMsgBtn;
     private EditText msgTextEt;
     private LinearLayoutManager layoutManager;
@@ -44,6 +47,7 @@ public class ChatActivity extends BaseActivity<ChatPresenterImp, ChatView> imple
 
     private Integer friendId;
     private String groupName;
+    private Bundle getChatDataBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +65,15 @@ public class ChatActivity extends BaseActivity<ChatPresenterImp, ChatView> imple
     }
     //初始化监听、并且接收消息,发送连接消息
     private void receiveConnect(){
-        chatPresenterImp.receiveMsg(cUser);
+        userFriendObj userObj = new userFriendObj();
+        userObj.setId(cUser.getId());
+        chatPresenterImp.getOneToOneChat(userObj,this.friendId);
     }
 
     private void sendMsg(){
         chatMsg = msgTextEt.getText().toString();
         chatPresenterImp.sendMsg(cUser,chatMsg,friendId,groupName);
+        msgTextEt.setText("");
     }
 
     @Override
@@ -83,9 +90,19 @@ public class ChatActivity extends BaseActivity<ChatPresenterImp, ChatView> imple
         this.cUser = cUserObj.getInstance();
         this.userMsgObj = new userMsgObj();
 
+        this.getChatDataBundle = getIntent().getExtras();
+        this.groupName = getChatDataBundle.getString("groupName");
+        this.friendId = getChatDataBundle.getInt("friendId");
         chatPresenterImp = new ChatPresenterImp();
         this.chatPresenterImp.attachView(this);
 
+        this.getChatMsgInfo = (Button)findViewById(R.id.id_chatGetChatInfo);
+        getChatMsgInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chatPresenterImp.getChatMsgData(groupName,1);
+            }
+        });
     }
 
     @Override
@@ -108,18 +125,28 @@ public class ChatActivity extends BaseActivity<ChatPresenterImp, ChatView> imple
     * 请求成功的回调
     * q*/
     @Override
-    public void loadDataSuccess(userMsgObj tData) {
+    public void loadDataSuccess(BaseResponse<userMsgObj> tData) {
         //更新房间用户
         if(tData.getCode() == chatAboutConstants.chatMsgObj.ENTERROOM_SUCCESS){
-            Log.i("当前房间的人数:",tData.getMsg());
+            return;
         }
 
         //处理收到的最新消息
         if(tData.getCode() == chatAboutConstants.chatMsgObj.CHATMSG_RECEIVE_SUCCESS){
-            userMsgObj.setNickname(tData.getNickname());
-            userMsgObj.setId(tData.getId());
-            userMsgObj.setMsg(tData.getMsg());
+            userMsgObj = tData.getData();
+            userMsgObj.setNickname(tData.getData().getNickname());
+            userMsgObj.setId(tData.getData().getId());
+            userMsgObj.setMsg(tData.getData().getMsg());
             msgList.add(userMsgObj);
+            chatAdapter.notifyItemInserted(msgList.size()-1);
+            recyclerView.scrollToPosition(msgList.size()-1);
+        }
+
+        if(tData.getCode() == chatAboutConstants.chatMsgObj.GETCHATMSGDATA_SUCCESS){
+            ArrayList<userMsgObj> userMsgObjs = tData.getDataList();
+            for(int i=userMsgObjs.size()-1;i>0;i--){
+                msgList.add(userMsgObjs.get(i));
+            }
             chatAdapter.notifyItemInserted(msgList.size()-1);
             recyclerView.scrollToPosition(msgList.size()-1);
         }

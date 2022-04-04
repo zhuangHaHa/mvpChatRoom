@@ -1,6 +1,7 @@
 package ui.UI.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,8 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import base.BaseFragment;
 import entity.cUserObj;
+import entity.userFriendObj;
 import entity.userObj;
 import presenter.Fragment.FriendListPresenterImp;
+import ui.UI.activity.ChatActivity;
 import ui.UI.adapter.FriendListAdapter;
 import view.Fragment.FriendListView;
 import zhh.mvpchatroom.R;
@@ -35,6 +38,8 @@ public class FriendListFragment extends BaseFragment<FriendListPresenterImp, Fri
     private FriendListPresenterImp friendListPresenterImp;
     private ArrayList<Integer> userFriendsStatus  = new ArrayList<>();
     private Context fragmentContext;
+    private Bundle chatBundle;
+    private Intent toChatActivity;
 
 
     public FriendListFragment() {
@@ -69,7 +74,7 @@ public class FriendListFragment extends BaseFragment<FriendListPresenterImp, Fri
     }
 
     private void initAdapter() {
-        this.friendListAdapter = new FriendListAdapter(myFriendUserList);
+        this.friendListAdapter = new FriendListAdapter(myFriendUserList,this);
         this.friendListRecyclerView.setAdapter(friendListAdapter);
     }
 
@@ -81,14 +86,21 @@ public class FriendListFragment extends BaseFragment<FriendListPresenterImp, Fri
         this.friendListPresenterImp = new FriendListPresenterImp();
         friendListPresenterImp.attachView(this);
         getUserFriendList();
+        this.toChatActivity = new Intent(getContext(), ChatActivity.class);
+        this.chatBundle = new Bundle();
     }
 
-    private void getUserFriendList() {
+    /*
+    * 获得好友列表
+    * */
+    public void getUserFriendList() {
+        myFriendUserList.clear();
         userObj mUser = cUserObj.getInstance();
         if(mUser!=null){
             friendListPresenterImp.getFriendList(mUser);
         }
     }
+
 
     @Override
     public FriendListPresenterImp createPresenter() {
@@ -100,15 +112,9 @@ public class FriendListFragment extends BaseFragment<FriendListPresenterImp, Fri
         return this;
     }
 
-    @Override
-    public void loadDataSuccess(ArrayList<userObj> tData) {
-       for(int i=0;i<tData.size();i++){
-           myFriendUserList.add(tData.get(i));
-       }
-       friendListAdapter.notifyItemInserted(myFriendUserList.size()-1);
-    }
-
-
+    /*
+    * 收发当前好友状态
+    * */
     public void ChangeFriendStatus(ArrayList<Integer> friendStatus) {
         this.userFriendsStatus = friendStatus;
         updateFriendStatus(userFriendsStatus);
@@ -117,8 +123,6 @@ public class FriendListFragment extends BaseFragment<FriendListPresenterImp, Fri
     //friendStatus 在线的好友列表
     //myFriendUserList 所有的好友列表
     private void updateFriendStatus(ArrayList<Integer> onLineUsers){
-        Log.i("当前在线的玩家用户",onLineUsers.toString());
-        Log.i("用户好友列表",myFriendUserList.toString());
         for(int i=0;i<myFriendUserList.size();i++){
             for(int j=0;j<onLineUsers.size();j++){
                 if(onLineUsers.get(j) == myFriendUserList.get(i).getId()){
@@ -132,4 +136,29 @@ public class FriendListFragment extends BaseFragment<FriendListPresenterImp, Fri
         }
         friendListAdapter.notifyDataSetChanged();
     }
+
+    public void getChatFriendUser(userObj tUser){
+        if(tUser!=null){
+            friendListPresenterImp.getGroupName(cUserObj.getInstance(),tUser);
+        }else{
+            Log.e("FriendListFragment","你选的好友他妈的有毒赶快查查");
+        }
+    }
+
+
+    @Override
+    public void loadDataSuccess(userFriendObj tData) {
+        if(tData.getGroupName()==null){
+            myFriendUserList.add(tData);
+            friendListAdapter.notifyItemInserted(myFriendUserList.size()-1);
+        }
+        if(tData.getGroupName()!=null){
+            chatBundle.putString("groupName",tData.getGroupName());
+            chatBundle.putInt("friendId",tData.getFriendsId());
+            toChatActivity.putExtras(chatBundle);
+            startActivity(toChatActivity);
+        }
+
+    }
+
 }

@@ -6,36 +6,41 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 import base.BaseActivity;
+import base.BaseResponse;
 import constants.chatAboutConstants;
 import entity.cUserObj;
 import entity.userMsgObj;
 import presenter.ChatPresenterImp;
 import ui.UI.adapter.FriendListAdapter;
+import ui.UI.fragment.FriendApplyFragment;
 import ui.UI.fragment.FriendListFragment;
 import ui.UI.fragment.userSettingFragment;
 import view.ChatView;
 import zhh.mvpchatroom.R;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+
+import com.google.gson.Gson;
+
+import ui.UI.fragment.FriendApplyFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 import ui.UI.adapter.mainFaceFragmentAdapter;
 
-public class MainFaceActivity extends BaseActivity<ChatPresenterImp, ChatView> implements ChatView {
+public class MainFaceActivity extends BaseActivity<ChatPresenterImp, ChatView> implements ChatView,FriendApplyFragment.CallBackListener {
 
     private ViewPager2 mViewPager;
     private FragmentPagerAdapter mAdapter;
     private List<Fragment> mFragments = new ArrayList<Fragment>();
     private userSettingFragment mUserSettingFragment;
     private FriendListFragment friendListFragment;
+    private FriendApplyFragment friendApplyFragment;
     private ChatPresenterImp chatPresenterImp;
     private cUserObj cUser;
     private ArrayList<Integer> onlineFriends;
     private FriendListAdapter friendListAdapter;
+    private Gson gson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +63,8 @@ public class MainFaceActivity extends BaseActivity<ChatPresenterImp, ChatView> i
         this.onlineFriends = new ArrayList<>();
         this.chatPresenterImp.attachView(this);
         this.friendListFragment = FriendListFragment.newInstance();
-
+        this.friendApplyFragment = FriendApplyFragment.newInstance();//初始化登录数据时，获取一遍好友申请数据
+        this.gson = new Gson();
     }
 
     @Override
@@ -76,19 +82,20 @@ public class MainFaceActivity extends BaseActivity<ChatPresenterImp, ChatView> i
         mViewPager = findViewById(R.id.id_fragmentShow);
         ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(friendListFragment);
+        fragments.add(friendApplyFragment);
         fragments.add(mUserSettingFragment.newInstance());
         mainFaceFragmentAdapter pagerAdapter = new mainFaceFragmentAdapter(getSupportFragmentManager(),getLifecycle(),fragments);
         mViewPager.setAdapter(pagerAdapter);
     }
 
     @Override
-    public void loadDataSuccess(userMsgObj tData) {
+    public void loadDataSuccess(BaseResponse<userMsgObj> tData) {
         if(tData.getCode() == chatAboutConstants.chatMsgObj.ENTERROOM_SUCCESS){
-            this.onlineFriends = tData.getUserList();
+            this.onlineFriends = tData.getData().getUserList();
             ChangeFriendStatus(onlineFriends);
         }
         if(tData.getCode() == chatAboutConstants.chatMsgObj.LEAVEROOM_SUCCESS){
-            this.onlineFriends = tData.getUserList();
+            this.onlineFriends = tData.getData().getUserList();
             ChangeFriendStatus(onlineFriends);
         }
     }
@@ -105,4 +112,10 @@ public class MainFaceActivity extends BaseActivity<ChatPresenterImp, ChatView> i
         friendListFragment.ChangeFriendStatus(onlineUserList);
     }
 
+
+    //来自friendApplyFragment更新friendList的氢气
+    @Override
+    public void updateFriendList() {
+        friendListFragment.getUserFriendList();
+    }
 }

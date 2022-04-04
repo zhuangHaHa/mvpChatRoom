@@ -1,5 +1,6 @@
 package entity;
 
+import java.util.Date;
 import java.util.ArrayList;
 
 public class userMsgObj extends userObj{
@@ -43,4 +44,25 @@ public class userMsgObj extends userObj{
    }
 
    private Integer friendId;
+
+   public Date getMsgTime() {
+      return msgTime;
+   }
+
+   public void setMsgTime(Date msgTime) {
+      this.msgTime = msgTime;
+   }
+
+   private Date msgTime;
+
+   public Integer getUserId() {
+      return userId;
+   }
+
+   public void setUserId(Integer userId) {
+      this.userId = userId;
+   }
+
+   private Integer userId;//发送消息的人的userId
+
 }

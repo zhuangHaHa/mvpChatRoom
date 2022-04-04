@@ -5,8 +5,11 @@ import android.util.Log;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import base.IBaseRequestCallBack;
+import entity.userFriendObj;
 import entity.userObj;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
@@ -30,15 +33,31 @@ public class FriendListModelImp implements FriendListModel<userObj> {
       String userJsonObj = gson.toJson(cUser,userObj.class);
       RequestBody requestBody = new getRequestBody(userJsonObj).requestBodyBuilder();
       mCompositeDisposable.add(
-              mUserFriendLoader.getUserFriendList(requestBody).subscribe(new Consumer<ArrayList<userObj>>() {
+              mUserFriendLoader.getUserFriendList(requestBody).subscribe(new Consumer<ArrayList<userFriendObj>>() {
                  @Override
-                 public void accept(ArrayList<userObj> userObjs) throws Exception {
-                    if(userObjs!=null){
-                       iBaseRequestCallBack.requestSuccess(userObjs);
+                 public void accept(ArrayList<userFriendObj> userFriendObjs) throws Exception {
+                    if(userFriendObjs!=null){
+                       for(int i=0;i<userFriendObjs.size();i++){
+                          iBaseRequestCallBack.requestSuccess(userFriendObjs.get(i));
+                       }
                     }
-                    else {
-                       Log.i("FriendListModelImp","当前没好友，防空报错");
-                    }
+                 }
+              })
+      );
+   }
+
+   @Override
+   public void getGroupName(userObj cUser, userObj fUser, final IBaseRequestCallBack iBaseRequestCallBack) {
+      String myJsonObj = gson.toJson(cUser,userObj.class);
+      String friendJsonObj = gson.toJson(fUser,userObj.class);
+      HashMap<String,String> map = new HashMap<>();
+      map.put("user",myJsonObj);
+      map.put("friend",friendJsonObj);
+      mCompositeDisposable.add(
+              mUserFriendLoader.getUserFriendsGroupName(map).subscribe(new Consumer<userFriendObj>() {
+                 @Override
+                 public void accept(userFriendObj userFriendObj) throws Exception {
+                    iBaseRequestCallBack.requestSuccess(userFriendObj);
                  }
               })
       );

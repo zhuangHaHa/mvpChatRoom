@@ -23,12 +23,12 @@ import zhh.mvpchatroom.R;
 public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.ViewHolder>  {
 
    ArrayList<userObj> friendUserList;
-   Context mContext;
-   Intent startChatActivity;
+   FriendListFragment context;
 
 
-   public FriendListAdapter(ArrayList<userObj> dataList){
+   public FriendListAdapter(ArrayList<userObj> dataList,FriendListFragment context){
       this.friendUserList = dataList;
+      this.context = context;
    }
 
    @NonNull
@@ -42,18 +42,20 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
    public void onBindViewHolder(@NonNull FriendListAdapter.ViewHolder holder, int position) {
       final userObj friendUser = friendUserList.get(position);
       holder.friendNickName.setText(friendUser.getNickname());
+      if(friendUser!=null){
+         if(friendUser.getStatus() == 0){
+            holder.friendStatus.setText("离线");
+         }
+         if(friendUser.getStatus() == 1){
+            holder.friendStatus.setText("在线");
+         }
+      }
       holder.friendListItemLayout.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View view) {
-            Log.i("您点击的是用户",friendUser.getNickname());
+            context.getChatFriendUser(friendUser);
          }
       });
-      if(friendUser.getStatus() == 0){
-         holder.friendStatus.setText("离线");
-      }
-      if(friendUser.getStatus() == 1){
-         holder.friendStatus.setText("在线");
-      }
    }
 
    @Override

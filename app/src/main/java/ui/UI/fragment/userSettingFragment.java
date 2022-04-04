@@ -107,9 +107,6 @@ public class userSettingFragment extends BaseFragment<UserSettingPresenterImp, U
 
     @Override
     public void loadDataSuccess(userObj tData) {
-        if(tData.getNickname()!=userNickNameEdit.getText().toString()){
-            Toast.makeText(getContext(),"更新成功",Toast.LENGTH_SHORT).show();
-        }
         userNickNameEdit.setText(tData.getNickname());
     }
 }

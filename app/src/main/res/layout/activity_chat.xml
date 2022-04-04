@@ -22,6 +22,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="bottom">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/id_chatGetChatInfo"
+            android:text="获取聊天数据"
+            ></Button>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,5 +42,6 @@
             android:layout_gravity="bottom"
             ></Button>
     </LinearLayout>
+
 
 </LinearLayout>

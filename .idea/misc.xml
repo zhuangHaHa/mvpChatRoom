@@ -16,9 +16,11 @@
         <entry key="..\:/mvpChatRoom/app/src/main/res/layout/chat_list_item.xml" value="0.25" />
         <entry key="..\:/mvpChatRoom/app/src/main/res/layout/content_chat.xml" value="0.25" />
         <entry key="..\:/mvpChatRoom/app/src/main/res/layout/fragment_chat.xml" value="0.1" />
+        <entry key="..\:/mvpChatRoom/app/src/main/res/layout/fragment_friend_apply.xml" value="0.1721014492753623" />
         <entry key="..\:/mvpChatRoom/app/src/main/res/layout/fragment_friend_list_blank.xml" value="0.2" />
         <entry key="..\:/mvpChatRoom/app/src/main/res/layout/fragment_user_setting.xml" value="0.19635416666666666" />
         <entry key="..\:/mvpChatRoom/app/src/main/res/layout/friend_list_item.xml" value="0.25" />
+        <entry key="..\:/mvpChatRoom/app/src/main/res/layout/friendapply_list_item.xml" value="0.22291666666666668" />
       </map>
     </option>
   </component>

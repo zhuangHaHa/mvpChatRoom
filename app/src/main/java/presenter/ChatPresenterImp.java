@@ -8,9 +8,11 @@ import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import androidx.annotation.NonNull;
 import base.BasePresenter;
+import base.BaseResponse;
 import base.IBaseRequestCallBack;
 import config.ApiConfig;
 import entity.cUserObj;
+import entity.userFriendObj;
 import entity.userMsgObj;
 import entity.userObj;
 import model.ChatModelImp;
@@ -21,7 +23,7 @@ import service.WebSocketSubscriber;
 import view.ChatView;
 import view.LoginView;
 
-public class ChatPresenterImp extends BasePresenter<ChatView, userMsgObj> implements ChatPresenter{
+public class ChatPresenterImp extends BasePresenter<ChatView, BaseResponse<userMsgObj>> implements ChatPresenter{
 
     ChatModelImp chatModelImp;
 
@@ -39,6 +41,14 @@ public class ChatPresenterImp extends BasePresenter<ChatView, userMsgObj> implem
     }
 
     @Override
+    public void getOneToOneChat(userFriendObj cUser, Integer friendId) {
+        if(cUser!=null && cUser!=null && friendId!=null){
+            chatModelImp.getOneToOneChat(cUser,friendId,this);
+        }
+    }
+
+
+    @Override
     public void receiveMsg(userObj cUser) {
         if(getmView()!=null){
             chatModelImp.receiveMsg(cUser,this);
@@ -49,6 +59,13 @@ public class ChatPresenterImp extends BasePresenter<ChatView, userMsgObj> implem
     public void destoryDisconnect(userObj cUser) {
         if(getmView()!=null){
             chatModelImp.destoryDisconnect(cUser);
+        }
+    }
+
+    @Override
+    public void getChatMsgData(String groupName, Integer page) {
+        if(getmView()!=null){
+            chatModelImp.getChatMsgData(groupName,page,this);
         }
     }
 

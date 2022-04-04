@@ -20,6 +20,13 @@ public class FriendListPresenterImp extends BasePresenter<FriendListView, userOb
    }
 
    @Override
+   public void getGroupName(userObj cUser, userObj fUser) {
+      if(cUser!=null && fUser!=null && getmView()!=null){
+         friendListModelImp.getGroupName(cUser,fUser,this);
+      }
+   }
+
+   @Override
    public void unSubscribe() {
       friendListModelImp.onUnsubscribe();
    }

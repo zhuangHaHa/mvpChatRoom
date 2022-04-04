@@ -9,6 +9,12 @@ public interface FriendListModel<T> {
     * */
    void getFriendList(userObj cUser, IBaseRequestCallBack iBaseRequestCallBack);
 
+
+   /*
+   * 获取groupName数据
+   * */
+   void getGroupName(userObj cUser,userObj fUser,IBaseRequestCallBack iBaseRequestCallBack);
+
    /*
     * 注销subscribe
     * */
